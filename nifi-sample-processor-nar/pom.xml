@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>io.datadynamics.bigdata.nifi</groupId>
+        <artifactId>nifi-sample-processor</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <artifactId>nifi-sample-processor-nar</artifactId>
+    <version>1.0.0</version>
+    <packaging>nar</packaging>
+
+    <properties>
+        <maven.javadoc.skip>true</maven.javadoc.skip>
+        <source.skip>true</source.skip>
+
+        <maven.nifi.plugin.version>1.3.2</maven.nifi.plugin.version>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.nifi</groupId>
+                <artifactId>nifi-nar-maven-plugin</artifactId>
+                <version>${maven.nifi.plugin.version}</version>
+                <configuration>
+                    <excludeGroupIds>org.apache.nifi</excludeGroupIds>
+                    <!--
+                        <excludeArtifactIds></excludeArtifactIds>
+                    -->
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>scp</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <scp todir="root:root@127.0.0.1:/root/nifi-1.13.0/lib" port="2222" trust="true" failonerror="false">
+                                    <fileset dir="${basedir}/target">
+                                        <include name="${project.build.finalName}*.nar"/>
+                                    </fileset>
+                                </scp>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.ant</groupId>
+                        <artifactId>ant-jsch</artifactId>
+                        <version>1.10.9</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.jcraft</groupId>
+                        <artifactId>jsch</artifactId>
+                        <version>0.1.55</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.datadynamics.bigdata.nifi</groupId>
+            <artifactId>nifi-sample-processor-processors</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+    </dependencies>
+
+</project>
