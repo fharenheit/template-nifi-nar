@@ -1,1 +1,2 @@
 io.datadynamics.bigdata.nifi.processors.sample.UpdateRecord
+io.datadynamics.bigdata.nifi.processors.sample.csv.CSVReader
