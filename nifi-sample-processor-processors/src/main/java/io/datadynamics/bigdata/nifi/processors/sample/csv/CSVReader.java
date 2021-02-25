@@ -37,13 +37,12 @@ import java.util.Map;
         + "자세한 내용은 Controller Service 문서를 참고하십시오.")
 public class CSVReader extends SchemaRegistryService implements RecordReaderFactory {
 
-    private static final AllowableValue HEADER_DERIVED = new AllowableValue("csv-header-derived", "헤더명과 헤더명의 자료형을 문자열로 사용",
+    public static final AllowableValue HEADER_DERIVED = new AllowableValue("csv-header-derived", "헤더명과 헤더명의 자료형을 문자열로 사용",
             "첫번째 라인이 CSV 파일의 컬럼명으로 포함하는 헤더 라인이다. 컬럼명을 스키마로 사용하고 자료형은 모두 문자열입니다.");
 
     // CSV Parser
     public static final AllowableValue APACHE_COMMONS_CSV = new AllowableValue("commons-csv", "Apache Commons CSV", "Apache Commons CSV 기반 CSV Parser");
     public static final AllowableValue JACKSON_CSV = new AllowableValue("jackson-csv", "Jackson CSV", "Jackson Dataformats 기반 CSV Parser");
-
 
     public static final PropertyDescriptor CSV_PARSER = new PropertyDescriptor.Builder()
             .name("csv-reader-csv-parser")

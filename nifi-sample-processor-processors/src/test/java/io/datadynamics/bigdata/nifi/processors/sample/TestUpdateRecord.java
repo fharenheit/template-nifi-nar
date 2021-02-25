@@ -2,19 +2,13 @@ package io.datadynamics.bigdata.nifi.processors.sample;
 
 import io.datadynamics.bigdata.nifi.processors.sample.csv.CSVReader;
 import io.datadynamics.bigdata.nifi.processors.sample.csv.CSVUtils;
-import org.apache.nifi.components.PropertyDescriptor;
-import org.apache.nifi.expression.ExpressionLanguageScope;
+import io.datadynamics.bigdata.nifi.processors.sample.text.FreeFormTextRecordSetWriter;
 import org.apache.nifi.reporting.InitializationException;
 import org.apache.nifi.schema.access.SchemaAccessUtils;
-import org.apache.nifi.schema.inference.SchemaInferenceUtil;
-import org.apache.nifi.serialization.RecordReaderFactory;
-import org.apache.nifi.serialization.RecordSetWriterFactory;
-import org.apache.nifi.text.FreeFormTextRecordSetWriter;
 import org.apache.nifi.util.MockFlowFile;
 import org.apache.nifi.util.TestRunner;
 import org.apache.nifi.util.TestRunners;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static io.datadynamics.bigdata.nifi.processors.sample.UpdateRecord.RECORD_READER;
@@ -38,8 +32,9 @@ public class TestUpdateRecord {
 
         // Processor를 테스트하기 위해서 필요한 Reader, Writer를 생성하고 설정
         this.runner.addControllerService("reader", this.reader);
-        this.runner.setProperty(this.reader, CSVUtils.RECORD_SEPARATOR, "|");
-        this.runner.setProperty(this.reader, SchemaAccessUtils.SCHEMA_ACCESS_STRATEGY, SchemaInferenceUtil.INFER_SCHEMA.getValue());
+        this.runner.setProperty(this.reader, CSVUtils.FIRST_LINE_IS_HEADER, "true");
+        this.runner.setProperty(this.reader, SchemaAccessUtils.SCHEMA_ACCESS_STRATEGY, "infer-schema");
+        this.runner.setProperty(this.reader, CSVUtils.VALUE_SEPARATOR, ",");
         this.runner.enableControllerService(this.reader);
 
         this.runner.addControllerService("writer", this.writer);
@@ -52,15 +47,18 @@ public class TestUpdateRecord {
 
     @Test
     public void csvReader() {
-        runner.enqueue("C1|C2|C3|C4|C5|C6");
-        runner.enqueue("1|2|3|4|a,b,c,d,e|5");
-        runner.enqueue("1|2|3|4|a,b,c,d,e|5");
-        runner.enqueue("1|2|3|4|a,b,c,d,e|5");
+        runner.enqueue("C1,C2,C3,C4,C5,C6");
+        runner.enqueue("1,2,3,4,a|b|c|d|e,5");
+        runner.enqueue("1,2,3,4,a|b|c|d|e,5");
+        runner.enqueue("1,2,3,4,a|b|c|d|e,5");
+        runner.enqueue("1,2,3,4,a|b|c|d|e,5");
+        runner.enqueue("1,2,3,4,a|b|c|d|e,5");
+        runner.enqueue("1,2,3,4,a|b|c|d|e,5");
         runner.run();
 
         runner.assertAllFlowFilesTransferred(UpdateRecord.REL_SUCCESS, 1);
         final MockFlowFile out = runner.getFlowFilesForRelationship(UpdateRecord.REL_SUCCESS).get(0);
-        System.out.println(out);
+        System.out.println(new String(out.getData()));
     }
 
 }

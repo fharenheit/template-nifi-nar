@@ -31,22 +31,19 @@ import java.util.stream.Stream;
 @InputRequirement(Requirement.INPUT_REQUIRED)
 @Tags({"example"})
 @SeeAlso({})
-@CapabilityDescription("Updates the contents of a FlowFile that contains Record-oriented data (i.e., data that can be read via a RecordReader and written by a RecordWriter). "
+@CapabilityDescription("레코드 데이터를 포함하는 FlwoFile의 내용을 업데이트합니다. "
         + "This Processor requires that at least one user-defined Property be added. The name of the Property should indicate a RecordPath that determines the field that should "
         + "be updated. The value of the Property is either a replacement value (optionally making use of the Expression Language) or is itself a RecordPath that extracts a value from "
         + "the Record. Whether the Property value is determined to be a RecordPath or a literal value depends on the configuration of the <Replacement Value Strategy> Property.")
 @WritesAttributes({
-        @WritesAttribute(attribute = "record.index", description =
-                "This attribute provides the current row index and is only available inside the literal value expression."),
-        @WritesAttribute(attribute = "record.error.message",
-                description = "This attribute provides on failure the error message encountered by the Reader or Writer.")
+        @WritesAttribute(attribute = "record.index", description = "현재 ROW Index를 제공하는 속성이며 이 속성은 literal value expression 내에서만 사용할수 있습니다."),
+        @WritesAttribute(attribute = "record.error.message", description = "Reader 또는 Writer에서 에러 발생시 에러 메시지를 제공하는 속성입니다.")
 })
 public class UpdateRecord extends AbstractRecordProcessor {
 
     private static final String FIELD_NAME = "field.name";
     private static final String FIELD_VALUE = "field.value";
     private static final String FIELD_TYPE = "field.type";
-
     private static final String RECORD_INDEX = "record.index";
 
     private volatile RecordPathCache recordPathCache;
