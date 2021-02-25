@@ -11,9 +11,6 @@ import org.apache.nifi.components.*;
 import org.apache.nifi.expression.ExpressionLanguageScope;
 import org.apache.nifi.flowfile.FlowFile;
 import org.apache.nifi.processor.ProcessContext;
-import org.apache.nifi.processor.ProcessSession;
-import org.apache.nifi.processor.Relationship;
-import org.apache.nifi.processor.exception.ProcessException;
 import org.apache.nifi.record.path.FieldValue;
 import org.apache.nifi.record.path.RecordPath;
 import org.apache.nifi.record.path.RecordPathResult;
@@ -70,15 +67,6 @@ public class UpdateRecord extends AbstractRecordProcessor {
             .defaultValue(LITERAL_VALUES.getValue())
             .expressionLanguageSupported(ExpressionLanguageScope.NONE)
             .required(true)
-            .build();
-
-    static final Relationship REL_SUCCESS = new Relationship.Builder()
-            .name("success")
-            .description("A FlowFile is routed to this relationship after it has been converted to JSON")
-            .build();
-    static final Relationship REL_FAILURE = new Relationship.Builder()
-            .name("failure")
-            .description("A FlowFile is routed to this relationship if it cannot be parsed as Avro or cannot be converted to JSON for any reason")
             .build();
 
     @Override

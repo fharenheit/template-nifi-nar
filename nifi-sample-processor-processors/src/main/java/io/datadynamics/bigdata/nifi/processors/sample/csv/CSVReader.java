@@ -1,6 +1,5 @@
 package io.datadynamics.bigdata.nifi.processors.sample.csv;
 
-
 import org.apache.commons.csv.CSVFormat;
 import org.apache.nifi.annotation.documentation.CapabilityDescription;
 import org.apache.nifi.annotation.documentation.Tags;
@@ -31,29 +30,25 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-@Tags({"csv", "parse", "record", "row", "reader", "delimited", "comma", "separated", "values"})
-@CapabilityDescription("Parses CSV-formatted data, returning each row in the CSV file as a separate record. "
-        + "This reader allows for inferring a schema based on the first line of the CSV, if a 'header line' is present, or providing an explicit schema "
-        + "for interpreting the values. See Controller Service's Usage for further documentation.")
+@Tags({"example"})
+@CapabilityDescription("CSV 형식의 데이터를 파싱해서 CSV 파일의 각 ROW를 별도의 레코드로 반환합니다. "
+        + "이 Reader는 CSV 파일의 첫 라인을 읽어서 스키나를 추론하거나" +
+        "헤더 라인이 있거나 또는 명시적으로 스키나를 제공할 수 있습니다. "
+        + "자세한 내용은 Controller Service 문서를 참고하십시오.")
 public class CSVReader extends SchemaRegistryService implements RecordReaderFactory {
 
-    private static final AllowableValue HEADER_DERIVED = new AllowableValue("csv-header-derived", "Use String Fields From Header",
-            "The first non-comment line of the CSV file is a header line that contains the names of the columns. The schema will be derived by using the "
-                    + "column names in the header and assuming that all columns are of type String.");
+    private static final AllowableValue HEADER_DERIVED = new AllowableValue("csv-header-derived", "헤더명과 헤더명의 자료형을 문자열로 사용",
+            "첫번째 라인이 CSV 파일의 컬럼명으로 포함하는 헤더 라인이다. 컬럼명을 스키마로 사용하고 자료형은 모두 문자열입니다.");
 
-    // CSV parsers
-    public static final AllowableValue APACHE_COMMONS_CSV = new AllowableValue("commons-csv", "Apache Commons CSV",
-            "The CSV parser implementation from the Apache Commons CSV library.");
-
-    public static final AllowableValue JACKSON_CSV = new AllowableValue("jackson-csv", "Jackson CSV",
-            "The CSV parser implementation from the Jackson Dataformats library.");
+    // CSV Parser
+    public static final AllowableValue APACHE_COMMONS_CSV = new AllowableValue("commons-csv", "Apache Commons CSV", "Apache Commons CSV 기반 CSV Parser");
+    public static final AllowableValue JACKSON_CSV = new AllowableValue("jackson-csv", "Jackson CSV", "Jackson Dataformats 기반 CSV Parser");
 
 
     public static final PropertyDescriptor CSV_PARSER = new PropertyDescriptor.Builder()
             .name("csv-reader-csv-parser")
             .displayName("CSV Parser")
-            .description("Specifies which parser to use to read CSV records. NOTE: Different parsers may support different subsets of functionality "
-                    + "and may also exhibit different levels of performance.")
+            .description("CSV 파일을 읽을 때 사용하는 CSV Parser를 지정합니다. 참고: Parser간 서로 다른 기능을 제공하므로 성능 영향이 발생할 수 있습니다.")
             .expressionLanguageSupported(ExpressionLanguageScope.NONE)
             .allowableValues(APACHE_COMMONS_CSV, JACKSON_CSV)
             .defaultValue(APACHE_COMMONS_CSV.getValue())
@@ -70,7 +65,7 @@ public class CSVReader extends SchemaRegistryService implements RecordReaderFact
     private volatile boolean ignoreHeader;
     private volatile String charSet;
 
-    // it will be initialized only if there are no dynamic csv formatting properties
+    // Dynamic CSV 포맷인 경우에만 초기화한다.
     private volatile CSVFormat csvFormat;
 
     @Override
@@ -139,7 +134,7 @@ public class CSVReader extends SchemaRegistryService implements RecordReaderFact
         } else if (JACKSON_CSV.getValue().equals(csvParser)) {
             return new JacksonCSVRecordReader(in, logger, schema, csvFormat, firstLineIsHeader, ignoreHeader, dateFormat, timeFormat, timestampFormat, charSet);
         } else {
-            throw new IOException("Parser not supported");
+            throw new IOException("Parser를 지원하지 않습니다");
         }
     }
 

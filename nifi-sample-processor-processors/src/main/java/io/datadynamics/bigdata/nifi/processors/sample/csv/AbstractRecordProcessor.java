@@ -23,23 +23,23 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class AbstractRecordProcessor extends AbstractProcessor {
 
-    static final PropertyDescriptor RECORD_READER = new PropertyDescriptor.Builder()
+    public static final PropertyDescriptor RECORD_READER = new PropertyDescriptor.Builder()
             .name("record-reader")
             .displayName("Record Reader")
-            .description("입력 데이터를 읽기 위한 Controller Service를 지정하십시오")
+            .description("입력 데이터를 읽기 위한 Controller Service를 지정하십시오.")
             .identifiesControllerService(RecordReaderFactory.class)
             .required(true)
             .build();
 
-    static final PropertyDescriptor RECORD_WRITER = new PropertyDescriptor.Builder()
+    public static final PropertyDescriptor RECORD_WRITER = new PropertyDescriptor.Builder()
             .name("record-writer")
             .displayName("Record Writer")
-            .description("레코드를 기록하기 위해서 사용할 Controller Service를 지정하십시오")
+            .description("레코드를 기록하기 위해서 사용할 Controller Service를 지정하십시오.")
             .identifiesControllerService(RecordSetWriterFactory.class)
             .required(true)
             .build();
 
-    static final PropertyDescriptor INCLUDE_ZERO_RECORD_FLOWFILES = new PropertyDescriptor.Builder()
+    public static final PropertyDescriptor INCLUDE_ZERO_RECORD_FLOWFILES = new PropertyDescriptor.Builder()
             .name("include-zero-record-flowfiles")
             .displayName("레코드가 없는 FlowFile 포함 여부")
             .description("입력 FlowFile을 변환할때, 변환 결과가 데이터가 없다면 이 속성을 통해 상응하는 relationship에 FlowFile을 전송할지 여부를 결정합니다.")
@@ -49,15 +49,14 @@ public abstract class AbstractRecordProcessor extends AbstractProcessor {
             .required(true)
             .build();
 
-    static final Relationship REL_SUCCESS = new Relationship.Builder()
+    public static final Relationship REL_SUCCESS = new Relationship.Builder()
             .name("success")
-            .description("성공적으로 전송한 FlowFile이 이 Relationship으로 라우팅됩니다.")
+            .description("성공적으로 전송한 FlowFile이 이 relationship으로 라우팅합니다.")
             .build();
 
-    static final Relationship REL_FAILURE = new Relationship.Builder()
+    public static final Relationship REL_FAILURE = new Relationship.Builder()
             .name("failure")
-            .description("If a FlowFile cannot be transformed from the configured input format to the configured output format, "
-                    + "the unchanged FlowFile will be routed to this relationship")
+            .description("FlowFile을 설정한 입력 포맷에서 설정한 출력 포맷으로 전환할 수 없는 경우 변경하지 않은 FlowFile을 이 relationship으로 라우팅합니다.")
             .build();
 
     @Override

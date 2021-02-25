@@ -8,6 +8,7 @@ import org.apache.commons.io.input.BOMInputStream;
 import org.apache.nifi.logging.ComponentLog;
 import org.apache.nifi.serialization.MalformedRecordException;
 import org.apache.nifi.serialization.record.*;
+import org.apache.nifi.serialization.record.Record;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,6 +17,7 @@ import java.io.Reader;
 import java.util.*;
 
 public class CSVRecordReader extends AbstractCSVRecordReader {
+
     private final CSVParser csvParser;
 
     private List<RecordField> recordFields;
@@ -43,7 +45,7 @@ public class CSVRecordReader extends AbstractCSVRecordReader {
     }
 
     @Override
-    public Record nextRecord(final boolean coerceTypes, final boolean dropUnknownFields) throws IOException, MalformedRecordException {
+    public Record nextRecord(boolean coerceTypes, boolean dropUnknownFields) throws IOException, MalformedRecordException {
 
         try {
             final RecordSchema schema = getSchema();
@@ -124,4 +126,3 @@ public class CSVRecordReader extends AbstractCSVRecordReader {
         csvParser.close();
     }
 }
-
