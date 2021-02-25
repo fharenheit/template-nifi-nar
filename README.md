@@ -27,6 +27,8 @@ NiFi Processor의 명칭은 Class명으로 결정이 되며 NiFi에 동일한 �
 @Tags({"example"})
 @SeeAlso({})
 public class UpdateRecord extends AbstractRecordProcessor {
+...
+}
 ```
 
 ## Deployment
