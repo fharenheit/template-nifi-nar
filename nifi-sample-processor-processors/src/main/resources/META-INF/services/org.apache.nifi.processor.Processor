@@ -1,3 +1,2 @@
 io.datadynamics.bigdata.nifi.processors.sample.UpdateRecord
-io.datadynamics.bigdata.nifi.processors.sample.csv.CSVReader
-io.datadynamics.bigdata.nifi.processors.sample.text.FreeFormTextRecordSetWriter
+io.datadynamics.bigdata.nifi.processors.sample.convert.ConvertRecord
