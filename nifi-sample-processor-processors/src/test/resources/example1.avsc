@@ -1,0 +1,31 @@
+{
+  "type": "record",
+  "name": "example1",
+  "namespace": "io.datadynamics",
+  "fields": [
+    {
+      "name": "C1",
+      "type": "string"
+    },
+    {
+      "name": "C2",
+      "type": "string"
+    },
+    {
+      "name": "C3",
+      "type": "string"
+    },
+    {
+      "name": "C4",
+      "type": "string"
+    },
+    {
+      "name": "C5",
+      "type": "string"
+    },
+    {
+      "name": "C6",
+      "type": "string"
+    }
+  ]
+}
