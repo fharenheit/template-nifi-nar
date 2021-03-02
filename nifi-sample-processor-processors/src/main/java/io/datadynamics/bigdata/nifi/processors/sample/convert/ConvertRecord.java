@@ -1,21 +1,22 @@
 package io.datadynamics.bigdata.nifi.processors.sample.convert;
 
 import io.datadynamics.bigdata.nifi.processors.sample.csv.AbstractRecordProcessor;
+import org.apache.avro.Schema;
 import org.apache.nifi.annotation.behavior.*;
 import org.apache.nifi.annotation.behavior.InputRequirement.Requirement;
 import org.apache.nifi.annotation.documentation.CapabilityDescription;
 import org.apache.nifi.annotation.documentation.Tags;
-import org.apache.nifi.components.AllowableValue;
+import org.apache.nifi.avro.AvroTypeUtil;
 import org.apache.nifi.components.PropertyDescriptor;
 import org.apache.nifi.expression.ExpressionLanguageScope;
 import org.apache.nifi.flowfile.FlowFile;
 import org.apache.nifi.processor.ProcessContext;
-import org.apache.nifi.serialization.record.Record;
+import org.apache.nifi.serialization.SimpleRecordSchema;
+import org.apache.nifi.serialization.record.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @EventDriven
 @SupportsBatching
@@ -36,6 +37,8 @@ import java.util.List;
 public class ConvertRecord extends AbstractRecordProcessor {
 
     Logger logger = LoggerFactory.getLogger(ConvertRecord.class);
+
+    Schema.Parser parser = new Schema.Parser();
 
     public static final PropertyDescriptor ARRAY_COLUMN_NAMES = new PropertyDescriptor.Builder()
             .name("array-column-names")
@@ -66,17 +69,56 @@ public class ConvertRecord extends AbstractRecordProcessor {
 
     @Override
     protected Record process(final Record record, final FlowFile flowFile, final ProcessContext context, final long count) {
-        String separator = context.getProperty(ARRAY_COLUMN_NAMES_SEPARATOR).getValue();
-        String columnNames = context.getProperty(ARRAY_COLUMN_NAMES).getValue();
+//        String separator = context.getProperty(ARRAY_COLUMN_NAMES_SEPARATOR).getValue();
+//        String columnNames = context.getProperty(ARRAY_COLUMN_NAMES).getValue();
 
-        logger.info("Column Values Seperator : " + separator);
-        logger.info("Column Names : " + columnNames);
-        logger.info("Record : " + record.toString());
-        logger.info("FlowFile : " + flowFile);
-        logger.info("Count : " + count);
+        Schema avroSchema = parser.parse("{\n" +
+                "  \"type\": \"record\",\n" +
+                "  \"name\": \"example2\",\n" +
+                "  \"namespace\": \"io.datadynamics\",\n" +
+                "  \"fields\": [\n" +
+                "    {\n" +
+                "      \"name\": \"C1\",\n" +
+                "      \"type\": \"string\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"name\": \"C5\",\n" +
+                "      \"type\": {\n" +
+                "        \"type\": \"array\",\n" +
+                "        \"items\": \"string\"\n" +
+                "      }\n" +
+                "    }\n" +
+                "  ]\n" +
+                "}");
 
-        String value = record.getAsString("C5");
-        return record;
+        Map<String, Object> values = new HashMap();
+        for (String name : record.getRawFieldNames()) {
+            values.put(name, record.getValue(name));
+        }
+        values.put("C5", record.getAsString("C5").split("|"));
+
+        MapRecord convertedRecord = new MapRecord(AvroTypeUtil.createSchema(avroSchema), values);
+        return convertedRecord;
+    }
+
+    List names() {
+        List list = new ArrayList();
+        list.add("C5");
+        return list;
+    }
+
+    SimpleRecordSchema schema(Record record, List<String> names) {
+        List fields = new ArrayList();
+        List<String> fieldNames = record.getSchema().getFieldNames();
+        for (String fieldName : fieldNames) {
+            Optional<DataType> dataType = record.getSchema().getDataType(fieldName);
+            if (names.contains(fieldName)) {
+                fields.add(new RecordField(fieldName, RecordFieldType.ARRAY.getDataType()));
+            } else {
+                fields.add(new RecordField(fieldName, dataType.get()));
+            }
+        }
+        return new SimpleRecordSchema(fields);
     }
 
 }
