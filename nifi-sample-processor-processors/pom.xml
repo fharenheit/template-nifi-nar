@@ -6,7 +6,7 @@
     <parent>
         <groupId>io.datadynamics.bigdata.nifi</groupId>
         <artifactId>nifi-sample-processor</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
     <artifactId>nifi-sample-processor-processors</artifactId>
     <packaging>jar</packaging>

@@ -6,11 +6,10 @@
     <parent>
         <groupId>io.datadynamics.bigdata.nifi</groupId>
         <artifactId>nifi-sample-processor</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>nifi-sample-processor-nar</artifactId>
-    <version>1.0.1</version>
     <packaging>nar</packaging>
 
     <properties>
@@ -76,7 +75,7 @@
         <dependency>
             <groupId>io.datadynamics.bigdata.nifi</groupId>
             <artifactId>nifi-sample-processor-processors</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
